@@ -286,10 +286,8 @@ function handleGeolocation() {
                 updateMapMarkers();
             }
 
-            // 計算距離並重新渲染
-            calculateDistances();
-            currentData.sort((a, b) => a.distance - b.distance);
-            renderList(currentData);
+            // 計算距離並重新根據目前的過濾條件渲染
+            applyFilters();
         },
         // 失敗
         (error) => {
