@@ -27,22 +27,24 @@ let mapInstance = null;
 let markersLayer = null;
 let isMapMode = false;
 
-// 初始化載入自訂資料
-function loadCustomData() {
+// 取得所有資料 (基本 + 自訂)
+function getAllData() {
     const savedData = localStorage.getItem('tokyoFoodMapCustomData');
+    let customRestaurants = [];
     if (savedData) {
         try {
-            const customRestaurants = JSON.parse(savedData);
-            currentData = [...restaurantsData, ...customRestaurants];
+            customRestaurants = JSON.parse(savedData);
         } catch (e) {
             console.error('解析自訂資料失敗', e);
         }
     }
+    // 回傳合併後的全新陣列，避免處理到原始參考
+    return [...restaurantsData, ...customRestaurants].map(item => ({ ...item }));
 }
 
 // 啟動初始化
 function init() {
-    loadCustomData();
+    currentData = getAllData();
     renderList(currentData);
     setupEventListeners();
 }
@@ -201,7 +203,6 @@ function handleAddRestaurant(e) {
     saveToLocalStorage(newRestaurant);
 
     // 更新當前資料並重新渲染
-    currentData.push(newRestaurant);
     applyFilters();
 
     // 提示與關閉
@@ -308,10 +309,10 @@ function handleGeolocation() {
 // 處理搜尋與過濾功能
 function applyFilters(searchTerm = searchInput.value.toLowerCase().trim()) {
 
-    // 重新載入完整資料 (包含預設與自訂)
-    loadCustomData();
+    // 永遠從完整的資料源開始過濾
+    const allData = getAllData();
 
-    currentData = currentData.filter(restaurant => {
+    currentData = allData.filter(restaurant => {
         // 1. 搜尋條件過濾
         const matchSearch = restaurant.name.toLowerCase().includes(searchTerm) ||
             restaurant.reason.toLowerCase().includes(searchTerm);
@@ -324,7 +325,7 @@ function applyFilters(searchTerm = searchInput.value.toLowerCase().trim()) {
 
     // 如果已經有位置資訊，重新計算距離並排序
     if (currentPosition) {
-        calculateDistances();
+        calculateDistances(currentData); // 傳入當前資料進行計算
         currentData.sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity));
     }
 
@@ -410,10 +411,15 @@ function renderList(data) {
 }
 
 // Haversine 公式計算兩點間的距離 (回傳公里)
-function calculateDistances() {
-    currentData.forEach(restaurant => {
+function calculateDistances(data = currentData) {
+    if (!currentPosition) return;
+
+    data.forEach(restaurant => {
         // 如果沒有經緯度則不計算
-        if (!restaurant.lat || !restaurant.lng) return;
+        if (!restaurant.lat || !restaurant.lng) {
+            restaurant.distance = undefined;
+            return;
+        }
 
         const R = 6371; // 地球半徑 (公里)
         const dLat = deg2rad(restaurant.lat - currentPosition.lat);
