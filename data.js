@@ -302,5 +302,53 @@ const restaurantsData = [
         lat: 35.6475,
         lng: 139.7075,
         mapsQuery: "AFURI 惠比壽"
+    },
+    {
+        name: "日山壽喜燒",
+        reason: "日本橋知名壽喜燒老店，肉質頂級且服務周到。",
+        category: "壽喜燒",
+        lat: 35.6853,
+        lng: 139.7801,
+        mapsQuery: "日山 壽喜燒 日本橋"
+    },
+    {
+        name: "築地 鮨國",
+        reason: "築地清單代表，滿出來的海膽丼是視覺與味覺的饗宴。",
+        category: "壽司",
+        lat: 35.6656,
+        lng: 139.7712,
+        mapsQuery: "鮨國 築地"
+    },
+    {
+        name: "築地 虎杖",
+        reason: "以海鮮丼聞名，多種新鮮食材組合讓網友讚不絕口。",
+        category: "壽司",
+        lat: 35.6658,
+        lng: 139.7710,
+        mapsQuery: "築地 虎杖"
+    },
+    {
+        name: "和牛放題 肉屋橫町",
+        reason: "肉質非常好的和牛吃到飽，適合想要痛快吃肉的旅客。",
+        category: "燒肉",
+        lat: 35.6981,
+        lng: 139.7738,
+        mapsQuery: "肉屋橫町 秋葉原"
+    },
+    {
+        name: "肉屋台所",
+        reason: "熱門的和牛吃到飽連鎖店，CP值極高。",
+        category: "燒肉",
+        lat: 35.7101,
+        lng: 139.7742,
+        mapsQuery: "肉屋台所 上野"
+    },
+    {
+        name: "一心たん助",
+        reason: "厚切牛舌吃到飽名店，喜歡牛舌的朋友千萬別錯過。",
+        category: "燒肉",
+        lat: 35.7088,
+        lng: 139.7739,
+        mapsQuery: "一心たん助 上野"
     }
 ];
