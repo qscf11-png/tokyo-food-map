@@ -283,6 +283,12 @@ function handleGeolocation() {
             locationDesc.textContent = '列表與地圖已為您重新排序更新';
             sortOptions.style.display = 'block';
 
+            // 隱藏定位提示區，讓清單顯現
+            const locationCard = document.querySelector('.location-card');
+            if (locationCard) {
+                locationCard.style.display = 'none';
+            }
+
             if (isMapMode) {
                 updateMapMarkers();
             }
@@ -322,6 +328,14 @@ function applyFilters(searchTerm = searchInput.value.toLowerCase().trim()) {
 
         return matchSearch && matchCategory;
     });
+
+    // 隱藏定位提示區，讓篩選結果顯現 (如果已經定位過)
+    if (currentPosition) {
+        const locationCard = document.querySelector('.location-card');
+        if (locationCard) {
+            locationCard.style.display = 'none';
+        }
+    }
 
     // 如果已經有位置資訊，重新計算距離並排序
     if (currentPosition) {
