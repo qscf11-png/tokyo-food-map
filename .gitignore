@@ -1,0 +1,11 @@
+# Python 虛擬環境
+.venv/
+__pycache__/
+*.pyc
+
+# 本機工具設定（Claude Code 預覽）
+.claude/
+
+# 系統檔
+Thumbs.db
+.DS_Store

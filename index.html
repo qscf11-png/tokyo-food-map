@@ -3,130 +3,156 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日本網友推薦地圖 - 美食 / 景點 / 必買</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+TC:wght@400;500;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <!-- FontAwesome for Icons -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="日本美食地圖">
+    <meta name="theme-color" content="#1a1a2e">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗾</text></svg>">
+    <title>日本美食地圖</title>
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Leaflet CSS for Maps -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="background-blobs">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-    </div>
-
-    <div class="app-container">
-        <header class="header">
-            <div class="header-content">
-                <h1>🗺️ 日本網友推薦地圖</h1>
-                <p class="subtitle">彙整網友激推全日本必去、必吃、必買清單 (包含美食、景點、必買等分類)</p>
-                <div class="region-nav" id="region-nav">
-                    <button class="region-btn active" data-region="all">全日本</button>
-                    <button class="region-btn" data-region="東京">東京</button>
-                    <button class="region-btn" data-region="大阪">大阪</button>
-                    <button class="region-btn" data-region="京都">京都</button>
-                    <button class="region-btn" data-region="其他">其他</button>
-                </div>
-                <button id="btn-open-modal" class="secondary-btn" style="margin-top: 1rem;">
-                    <i class="fa-solid fa-plus"></i> 新增推薦項目
+    <div class="app">
+        <!-- 頂部狀態列 -->
+        <header class="app-header" id="app-header">
+            <div class="header-top">
+                <h1 class="app-title">🗾 日本美食地圖</h1>
+                <button class="icon-btn" id="btn-open-modal" aria-label="新增推薦">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+            <div class="search-bar glass-card">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="search-input" placeholder="搜尋餐廳、景點、必買...">
+                <button class="search-clear" id="search-clear" style="display:none;">
+                    <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
         </header>
 
-        <section class="controls-section">
-            <div class="location-card glass-panel">
-                <div class="location-status">
-                    <div class="icon-pulse">
-                        <i class="fa-solid fa-location-crosshairs"></i>
-                    </div>
-                    <div class="status-text">
-                        <h3 id="location-title">尚未取得您的位置</h3>
-                        <p id="location-desc">點擊下方按鈕，找出離您最近的必吃美食！</p>
-                    </div>
-                </div>
-                <button id="btn-locate" class="primary-btn">
-                    <i class="fa-solid fa-location-dot"></i> 尋找離我最近的推薦餐廳
-                </button>
-            </div>
-
-            <div class="filters">
-                <div class="search-box glass-panel">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="search-input" placeholder="搜尋餐廳名稱或關鍵字...">
+        <!-- 頁面內容區 -->
+        <main class="app-content">
+            <!-- 首頁 (探索) -->
+            <section class="page active" id="page-explore">
+                <!-- 地區篩選 -->
+                <div class="region-chips">
+                    <button class="chip active" data-region="all">全日本</button>
+                    <button class="chip" data-region="東京">東京</button>
+                    <button class="chip" data-region="大阪">大阪</button>
+                    <button class="chip" data-region="京都">京都</button>
+                    <button class="chip" data-region="仙台">仙台</button>
+                    <button class="chip" data-region="青森">青森</button>
+                    <button class="chip" data-region="其他">其他</button>
                 </div>
 
-                <div class="category-tags">
-                    <button class="type-btn active" data-type="all">全部</button>
-                    <button class="type-btn" data-type="food"><i class="fa-solid fa-utensils"></i> 美食</button>
-                    <button class="type-btn" data-type="spot"><i class="fa-solid fa-mountain-sun"></i> 景點</button>
-                    <button class="type-btn" data-type="shop"><i class="fa-solid fa-bag-shopping"></i> 必買</button>
-                    <div class="divider"></div>
-                    <div class="category-tags" id="category-tags-container">
-                        <!-- 這裡將由 JavaScript 根據類型動態產生 -->
-                    </div>
-                </div>
-                <div style="margin-top: 1rem; display: flex; justify-content: flex-end;">
-                    <button class="tag-btn" id="btn-toggle-map"
-                        style="background-color: var(--secondary-color); color: white; border-color: var(--secondary-color);">
-                        <i class="fa-solid fa-map"></i> 切換地圖模式
+                <!-- 類型篩選 -->
+                <div class="type-chips">
+                    <button class="type-chip active" data-type="all">
+                        <span class="type-icon">🔥</span>
+                        <span>全部</span>
+                    </button>
+                    <button class="type-chip" data-type="food">
+                        <span class="type-icon">🍜</span>
+                        <span>美食</span>
+                    </button>
+                    <button class="type-chip" data-type="spot">
+                        <span class="type-icon">⛩️</span>
+                        <span>景點</span>
+                    </button>
+                    <button class="type-chip" data-type="shop">
+                        <span class="type-icon">🛍️</span>
+                        <span>必買</span>
                     </button>
                 </div>
-            </div>
-        </section>
 
-        <!-- Interactive Map Container -->
-        <section id="map-section" class="glass-panel"
-            style="display: none; height: 500px; margin-bottom: 2rem; border-radius: var(--card-radius); overflow: hidden; position: relative;">
-            <div id="interactive-map" style="width: 100%; height: 100%;"></div>
-        </section>
+                <!-- 細分類標籤 -->
+                <div class="category-scroll" id="category-tags-container"></div>
 
-        <main class="results-section">
-            <div class="results-header">
-                <h2>🏅 推薦清單 <span id="results-count">(0)</span></h2>
-                <div class="sort-options" id="sort-options" style="display: none;">
-                    <span class="active">依距離排序</span>
+                <!-- 結果數量 -->
+                <div class="results-info">
+                    <span class="results-count" id="results-count">0 項結果</span>
+                    <div class="sort-badge" id="sort-options" style="display:none;">
+                        <i class="fa-solid fa-arrow-up-short-wide"></i> 依距離
+                    </div>
                 </div>
-            </div>
 
-            <div id="loading-spinner" class="spinner-container" style="display: none;">
-                <div class="spinner"></div>
-                <p>正在計算距離...</p>
-            </div>
+                <!-- 載入動畫 -->
+                <div id="loading-spinner" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>正在計算距離...</p>
+                </div>
 
-            <div id="restaurant-list" class="restaurant-grid">
-                <!-- 餐廳卡片會由 JavaScript 動態插入在這裡 -->
-            </div>
+                <!-- 卡片列表 -->
+                <div id="restaurant-list" class="card-list"></div>
 
-            <div id="no-results" class="no-results" style="display: none;">
-                <i class="fa-regular fa-face-frown-open"></i>
-                <p>找不到符合條件的餐廳</p>
-            </div>
+                <!-- 無結果 -->
+                <div id="no-results" class="empty-state" style="display: none;">
+                    <div class="empty-icon">🔍</div>
+                    <p>找不到符合條件的結果</p>
+                    <span>試試其他關鍵字或分類</span>
+                </div>
+            </section>
+
+            <!-- 地圖頁 -->
+            <section class="page" id="page-map">
+                <div id="interactive-map" class="full-map"></div>
+            </section>
+
+            <!-- 定位頁 -->
+            <section class="page" id="page-nearby">
+                <div class="nearby-hero">
+                    <div class="nearby-icon-wrap">
+                        <div class="pulse-ring"></div>
+                        <div class="nearby-icon">
+                            <i class="fa-solid fa-location-crosshairs"></i>
+                        </div>
+                    </div>
+                    <h2 id="location-title">尋找附近推薦</h2>
+                    <p id="location-desc">取得您的位置，找出最近的必吃必買！</p>
+                    <button id="btn-locate" class="locate-btn">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>開啟定位</span>
+                    </button>
+                </div>
+                <div id="nearby-list" class="card-list"></div>
+            </section>
         </main>
 
-        <footer>
-            <p>Data sourced from Threads community. Built with ❤️</p>
-        </footer>
+        <!-- 底部導航列 -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-page="page-explore">
+                <i class="fa-solid fa-compass"></i>
+                <span>探索</span>
+            </button>
+            <button class="nav-item" data-page="page-map">
+                <i class="fa-solid fa-map"></i>
+                <span>地圖</span>
+            </button>
+            <button class="nav-item" data-page="page-nearby">
+                <i class="fa-solid fa-location-crosshairs"></i>
+                <span>附近</span>
+            </button>
+        </nav>
     </div>
 
-    <!-- 新增餐廳 Modal -->
+    <!-- 新增推薦 Modal -->
     <div id="add-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content glass-panel">
+        <div class="modal-sheet">
+            <div class="modal-handle"></div>
             <div class="modal-header">
-                <h2><i class="fa-solid fa-utensils"></i> 新增推薦餐廳</h2>
-                <button id="btn-close-modal" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+                <h2>新增推薦</h2>
+                <button id="btn-close-modal" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form id="add-form" class="modal-body">
                 <div class="form-group">
-                    <label for="new-name">餐廳名稱 <span class="required">*</span></label>
+                    <label for="new-name">名稱 <span class="required">*</span></label>
                     <input type="text" id="new-name" required placeholder="例如：敘敘苑 晴空塔店">
                 </div>
                 <div class="form-row">
@@ -149,56 +175,53 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="new-category">詳細分類 <span class="required">*</span></label>
+                    <label for="new-category">分類 <span class="required">*</span></label>
                     <input type="text" id="new-category" required placeholder="例如：拉麵、展望台、藥妝">
                 </div>
                 <div class="form-group">
                     <label for="new-reason">推薦理由 <span class="required">*</span></label>
-                    <textarea id="new-reason" required rows="3" placeholder="為什麼必吃？分享一下心得吧！"></textarea>
+                    <textarea id="new-reason" required rows="3" placeholder="為什麼推薦？"></textarea>
                 </div>
-
-                <div class="form-group-row">
+                <div class="form-row">
                     <div class="form-group">
-                        <label for="new-lat">緯度 (Latitude)</label>
-                        <input type="number" id="new-lat" step="any" placeholder="例如：35.7100">
+                        <label for="new-lat">緯度</label>
+                        <input type="number" id="new-lat" step="any" placeholder="35.7100">
                     </div>
                     <div class="form-group">
-                        <label for="new-lng">經度 (Longitude)</label>
-                        <input type="number" id="new-lng" step="any" placeholder="例如：139.8107">
+                        <label for="new-lng">經度</label>
+                        <input type="number" id="new-lng" step="any" placeholder="139.8107">
                     </div>
                 </div>
-                <p class="form-hint"><i class="fa-solid fa-circle-info"></i> 若不清楚經緯度可留空，系統將無法計算距離，但仍可正常顯示於列表中。</p>
-
+                <p class="form-hint"><i class="fa-solid fa-circle-info"></i> 經緯度可留空</p>
                 <div class="modal-actions">
-                    <button type="button" id="btn-cancel-modal" class="btn-cancel">取消</button>
-                    <button type="submit" class="primary-btn btn-save">儲存餐廳</button>
+                    <button type="button" id="btn-cancel-modal" class="btn-secondary">取消</button>
+                    <button type="submit" class="btn-primary">儲存</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- 餐廳卡片模板 -->
+    <!-- 卡片模板 -->
     <template id="card-template">
-        <article class="restaurant-card glass-panel">
-            <div class="card-header">
-                <h3 class="restaurant-name"></h3>
-                <div class="distance-badge" style="display: none;">
-                    <i class="fa-solid fa-person-walking"></i> <span class="distance-value"></span>
+        <article class="item-card">
+            <div class="card-top">
+                <div class="card-title-row">
+                    <h3 class="restaurant-name"></h3>
+                    <div class="distance-badge" style="display: none;">
+                        <i class="fa-solid fa-person-walking"></i>
+                        <span class="distance-value"></span>
+                    </div>
                 </div>
             </div>
-            <div class="card-body">
-                <div class="quote-mark"><i class="fa-solid fa-quote-left"></i></div>
-                <p class="recommendation-reason"></p>
-            </div>
-            <div class="card-footer">
+            <p class="recommendation-reason"></p>
+            <div class="card-actions">
                 <a href="#" target="_blank" class="map-btn" rel="noopener noreferrer">
-                    <i class="fa-solid fa-map-location-dot"></i> Google Maps 導航
+                    <i class="fa-solid fa-diamond-turn-right"></i> 導航
                 </a>
             </div>
         </article>
     </template>
 
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="data.js"></script>

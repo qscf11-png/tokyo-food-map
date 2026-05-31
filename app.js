@@ -1,338 +1,170 @@
-// DOM 元素
-const btnLocate = document.getElementById('btn-locate');
-const locationTitle = document.getElementById('location-title');
-const locationDesc = document.getElementById('location-desc');
-const searchInput = document.getElementById('search-input');
-const restaurantList = document.getElementById('restaurant-list');
-const resultsCount = document.getElementById('results-count');
-const loadingSpinner = document.getElementById('loading-spinner');
-const noResults = document.getElementById('no-results');
-const sortOptions = document.getElementById('sort-options');
-const cardTemplate = document.getElementById('card-template');
-const categoryTagsContainer = document.getElementById('category-tags-container');
-const regionBtns = document.querySelectorAll('.region-btn');
-const typeBtns = document.querySelectorAll('.type-btn');
-const btnOpenModal = document.getElementById('btn-open-modal');
-const btnCloseModal = document.getElementById('btn-close-modal');
-const btnCancelModal = document.getElementById('btn-cancel-modal');
-const addModal = document.getElementById('add-modal');
-const addForm = document.getElementById('add-form');
-const btnToggleMap = document.getElementById('btn-toggle-map');
-const mapSection = document.getElementById('map-section');
-const resultsSection = document.querySelector('.results-section');
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
 
-// 分類配置
-const categoryConfigs = {
-    all: [],
-    food: ["拉麵", "燒肉", "牛舌", "壽喜燒", "鰻魚", "炸豬排/牛排", "牛排", "咖啡甜點", "洋食", "壽司", "烏龍麵"],
-    spot: ["神社寺院", "展望台", "主題樂園", "公園", "自然景觀", "購物中心"],
-    shop: ["文具", "電器", "藥妝", "服飾", "伴手禮", "百貨公司"]
-};
+const searchInput = $('#search-input');
+const searchClear = $('#search-clear');
+const restaurantList = $('#restaurant-list');
+const nearbyList = $('#nearby-list');
+const resultsCount = $('#results-count');
+const loadingSpinner = $('#loading-spinner');
+const noResults = $('#no-results');
+const sortOptions = $('#sort-options');
+const cardTemplate = $('#card-template');
+const categoryContainer = $('#category-tags-container');
+const btnOpenModal = $('#btn-open-modal');
+const btnCloseModal = $('#btn-close-modal');
+const btnCancelModal = $('#btn-cancel-modal');
+const addModal = $('#add-modal');
+const addForm = $('#add-form');
+const btnLocate = $('#btn-locate');
+const locationTitle = $('#location-title');
+const locationDesc = $('#location-desc');
 
-// 狀態管理
+// 細分類改為依實際資料動態產生 (見 renderCategoryTags)
+
 let currentPosition = null;
-let currentData = [...japanRecommendationData];
+let currentData = [];
 let currentCategory = 'all';
 let currentRegion = 'all';
 let currentType = 'all';
 let mapInstance = null;
 let markersLayer = null;
-let isMapMode = false;
+let activePage = 'page-explore';
 
-// 取得所有資料 (基本 + 自訂)
 function getAllData() {
-    const savedData = localStorage.getItem('tokyoFoodMapCustomData');
-    let customData = [];
-    if (savedData) {
-        try {
-            customData = JSON.parse(savedData);
-        } catch (e) {
-            console.error('解析自訂資料失敗', e);
-        }
+    const saved = localStorage.getItem('tokyoFoodMapCustomData');
+    let custom = [];
+    if (saved) {
+        try { custom = JSON.parse(saved); } catch (e) { /* ignore */ }
     }
-    // 回傳合併後的全新陣列
-    return [...japanRecommendationData, ...customData].map(item => ({ ...item }));
+    return [...japanRecommendationData, ...custom].map(item => ({ ...item }));
 }
 
-// 啟動初始化
 function init() {
     currentData = getAllData();
-    renderCategoryTags(); // 初始化分類標籤
-    applyFilters(); // 初始過濾
-    setupEventListeners();
+    renderCategoryTags();
+    applyFilters();
+    setupEvents();
 }
 
-function setupEventListeners() {
+function setupEvents() {
+    // 底部導航
+    $$('.nav-item').forEach(btn => {
+        btn.addEventListener('click', () => switchPage(btn.dataset.page));
+    });
+
+    // 區域
+    $$('.region-chips .chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+            $$('.region-chips .chip').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentRegion = btn.dataset.region;
+            currentCategory = 'all'; // 切換地區時重設細分類
+            renderCategoryTags();    // 依新地區更新可用分類
+            applyFilters();
+        });
+    });
+
+    // 類型
+    $$('.type-chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+            $$('.type-chip').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentType = btn.dataset.type;
+            currentCategory = 'all';
+            renderCategoryTags();
+            applyFilters();
+        });
+    });
+
+    // 細分類 (事件代理)
+    categoryContainer.addEventListener('click', (e) => {
+        const tag = e.target.closest('.cat-tag');
+        if (!tag) return;
+        categoryContainer.querySelectorAll('.cat-tag').forEach(b => b.classList.remove('active'));
+        tag.classList.add('active');
+        currentCategory = tag.dataset.category;
+        applyFilters();
+    });
+
+    // 搜尋
+    searchInput.addEventListener('input', (e) => {
+        searchClear.style.display = e.target.value ? 'flex' : 'none';
+        applyFilters(e.target.value.toLowerCase().trim());
+    });
+
+    searchClear.addEventListener('click', () => {
+        searchInput.value = '';
+        searchClear.style.display = 'none';
+        applyFilters();
+    });
+
+    // 定位
     btnLocate.addEventListener('click', handleGeolocation);
-    searchInput.addEventListener('input', handleSearch);
 
-    // 動態分類標籤監聽 (使用事件代理)
-    categoryTagsContainer.addEventListener('click', (e) => {
-        const targetBtn = e.target.closest('.tag-btn');
-        if (targetBtn) handleCategoryChange(targetBtn);
-    });
-
-    // 區域按鈕監聽
-    regionBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => handleRegionChange(e));
-    });
-
-    // 類型按鈕監聽
-    typeBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => handleTypeChange(e));
-    });
-
-    // 新增項目 Modal 監聽
-    btnOpenModal.addEventListener('click', () => addModal.style.display = 'flex');
-    btnCloseModal.addEventListener('click', closeAndResetModal);
-    btnCancelModal.addEventListener('click', closeAndResetModal);
-
-    // 點擊 Modal 外部關閉
-    addModal.addEventListener('click', (e) => {
-        if (e.target === addModal) closeAndResetModal();
-    });
-
-    // 處理表單送出
+    // Modal
+    btnOpenModal.addEventListener('click', () => { addModal.style.display = 'flex'; });
+    btnCloseModal.addEventListener('click', closeModal);
+    btnCancelModal.addEventListener('click', closeModal);
+    addModal.addEventListener('click', (e) => { if (e.target === addModal) closeModal(); });
     addForm.addEventListener('submit', handleAddItem);
+}
 
-    // 處理地圖切換
-    const btnMap = document.getElementById('btn-toggle-map');
-    if (btnMap) {
-        btnMap.addEventListener('click', toggleMapMode);
+function switchPage(pageId) {
+    activePage = pageId;
+
+    $$('.page').forEach(p => p.classList.remove('active'));
+    $(`#${pageId}`).classList.add('active');
+
+    $$('.nav-item').forEach(n => n.classList.remove('active'));
+    $$(`.nav-item[data-page="${pageId}"]`).forEach(n => n.classList.add('active'));
+
+    // 顯示/隱藏 header
+    const header = $('#app-header');
+    if (pageId === 'page-map') {
+        header.style.display = 'none';
+    } else {
+        header.style.display = 'block';
     }
-}
 
-function handleRegionChange(e) {
-    const targetBtn = e.target.closest('.region-btn');
-    if (!targetBtn) return;
+    if (pageId === 'page-map') {
+        if (!mapInstance) {
+            setTimeout(() => { initMap(); updateMapMarkers(); }, 150);
+        } else {
+            setTimeout(() => { mapInstance.invalidateSize(); updateMapMarkers(); }, 150);
+        }
+    }
 
-    regionBtns.forEach(btn => btn.classList.remove('active'));
-    targetBtn.classList.add('active');
-
-    currentRegion = targetBtn.dataset.region;
-    applyFilters();
-}
-
-function handleTypeChange(e) {
-    const targetBtn = e.target.closest('.type-btn');
-    if (!targetBtn) return;
-
-    typeBtns.forEach(btn => btn.classList.remove('active'));
-    targetBtn.classList.add('active');
-
-    currentType = targetBtn.dataset.type;
-    currentCategory = 'all'; // 切換大類型時，重設細分類
-
-    renderCategoryTags(); // 更新細分類標籤
-    applyFilters();
+    if (pageId === 'page-nearby' && currentPosition) {
+        renderNearbyList();
+    }
 }
 
 function renderCategoryTags() {
-    categoryTagsContainer.innerHTML = '';
+    categoryContainer.innerHTML = '';
 
-    // 預設加上「全部顯示」
+    // 選「全部」類型時不顯示細分類
+    if (currentType === 'all') return;
+
     const allBtn = document.createElement('button');
-    allBtn.className = `tag-btn ${currentCategory === 'all' ? 'active' : ''}`;
+    allBtn.className = `cat-tag ${currentCategory === 'all' ? 'active' : ''}`;
     allBtn.dataset.category = 'all';
-    allBtn.textContent = '全部顯示';
-    categoryTagsContainer.appendChild(allBtn);
+    allBtn.textContent = '全部';
+    categoryContainer.appendChild(allBtn);
 
-    const categories = categoryConfigs[currentType] || [];
-    categories.forEach(cat => {
+    // 依目前類型與地區，從實際資料動態取出存在的分類 (大阪/京都分類會自動出現)
+    const cats = [...new Set(
+        getAllData()
+            .filter(item => item.type === currentType && (currentRegion === 'all' || item.region === currentRegion))
+            .map(item => item.category)
+    )];
+    cats.forEach(cat => {
         const btn = document.createElement('button');
-        btn.className = `tag-btn ${currentCategory === cat ? 'active' : ''}`;
+        btn.className = `cat-tag ${currentCategory === cat ? 'active' : ''}`;
         btn.dataset.category = cat;
         btn.textContent = cat;
-        categoryTagsContainer.appendChild(btn);
+        categoryContainer.appendChild(btn);
     });
-}
-
-function handleCategoryChange(targetBtn) {
-    const allCategoryBtns = categoryTagsContainer.querySelectorAll('.tag-btn');
-    allCategoryBtns.forEach(btn => btn.classList.remove('active'));
-    targetBtn.classList.add('active');
-
-    currentCategory = targetBtn.dataset.category;
-    applyFilters();
-}
-
-function toggleMapMode() {
-    isMapMode = !isMapMode;
-
-    if (isMapMode) {
-        btnToggleMap.innerHTML = '<i class="fa-solid fa-list"></i> 切換清單模式';
-        resultsSection.style.display = 'none';
-        mapSection.style.display = 'block';
-
-        if (!mapInstance) {
-            initMap();
-        } else {
-            setTimeout(() => mapInstance.invalidateSize(), 100);
-        }
-        updateMapMarkers();
-    } else {
-        btnToggleMap.innerHTML = '<i class="fa-solid fa-map"></i> 切換地圖模式';
-        mapSection.style.display = 'none';
-        resultsSection.style.display = 'block';
-    }
-}
-
-function initMap() {
-    const defaultCenter = [35.6812, 139.7671];
-    const center = currentPosition ? [currentPosition.lat, currentPosition.lng] : defaultCenter;
-
-    mapInstance = L.map('interactive-map').setView(center, currentPosition ? 13 : 6);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(mapInstance);
-
-    markersLayer = L.layerGroup().addTo(mapInstance);
-}
-
-function updateMapMarkers() {
-    if (!mapInstance || !markersLayer) return;
-
-    markersLayer.clearLayers();
-
-    // 使用者位置
-    if (currentPosition) {
-        const userIcon = L.divIcon({
-            html: '<i class="fa-solid fa-location-crosshairs fa-2x" style="color:var(--primary-color);"></i>',
-            iconSize: [30, 30],
-            className: 'custom-user-marker'
-        });
-        L.marker([currentPosition.lat, currentPosition.lng], { icon: userIcon, zIndexOffset: 1000 })
-            .bindPopup('<b>📍 您的目前位置</b>')
-            .addTo(markersLayer);
-    }
-
-    const bounds = L.latLngBounds();
-    if (currentPosition) bounds.extend([currentPosition.lat, currentPosition.lng]);
-
-    let hasValidItems = false;
-    currentData.forEach(item => {
-        if (item.lat && item.lng) {
-            hasValidItems = true;
-
-            const iconHtml = item.type === 'food' ? '<i class="fa-solid fa-utensils"></i>' :
-                item.type === 'spot' ? '<i class="fa-solid fa-mountain-sun"></i>' :
-                    '<i class="fa-solid fa-bag-shopping"></i>';
-
-            const popupContent = `
-                <div style="font-family: inherit; min-width: 200px;">
-                    <h3 style="margin: 0 0 5px 0; font-size: 1.1rem;">${iconHtml} ${item.name}</h3>
-                    <div style="margin-bottom: 5px;">
-                        <span style="font-size: 0.8rem; background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px;">${item.region}</span>
-                        <span style="font-size: 0.8rem; background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px; margin-left: 5px;">${item.category}</span>
-                    </div>
-                    <p style="margin: 8px 0; font-size: 0.9rem; color: #555;">${item.reason}</p>
-                    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.mapsQuery)}&query_place_id=null" 
-                       target="_blank" style="display: block; background: var(--secondary-color); color: white; text-align: center; padding: 8px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 10px;">
-                        <i class="fa-solid fa-map-location-dot"></i> Google Maps 導航
-                    </a>
-                </div>
-            `;
-
-            L.marker([item.lat, item.lng])
-                .bindPopup(popupContent)
-                .addTo(markersLayer);
-
-            bounds.extend([item.lat, item.lng]);
-        }
-    });
-
-    if ((hasValidItems || currentPosition) && currentData.length > 0) {
-        mapInstance.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
-    }
-}
-
-function handleAddItem(e) {
-    e.preventDefault();
-
-    const newItem = {
-        name: document.getElementById('new-name').value.trim(),
-        region: document.getElementById('new-region').value,
-        type: document.getElementById('new-type').value,
-        category: document.getElementById('new-category').value.trim(),
-        reason: document.getElementById('new-reason').value.trim(),
-        mapsQuery: document.getElementById('new-name').value.trim() + " " + document.getElementById('new-region').value
-    };
-
-    const latInput = document.getElementById('new-lat').value;
-    const lngInput = document.getElementById('new-lng').value;
-    if (latInput && lngInput) {
-        newItem.lat = parseFloat(latInput);
-        newItem.lng = parseFloat(lngInput);
-    }
-
-    saveToLocalStorage(newItem);
-    applyFilters();
-    alert('成功新增項目！');
-    closeAndResetModal();
-}
-
-function saveToLocalStorage(item) {
-    const savedData = localStorage.getItem('tokyoFoodMapCustomData');
-    let customData = [];
-    if (savedData) {
-        try {
-            customData = JSON.parse(savedData);
-        } catch (e) {
-            console.error('解析自訂資料失敗', e);
-        }
-    }
-    customData.push(item);
-    localStorage.setItem('tokyoFoodMapCustomData', JSON.stringify(customData));
-}
-
-function handleGeolocation() {
-    if (!navigator.geolocation) {
-        alert('您的瀏覽器不支援地理位置功能！');
-        return;
-    }
-
-    btnLocate.disabled = true;
-    btnLocate.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 定位中...';
-    locationTitle.textContent = '正在取得您的位置...';
-
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-            currentPosition = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };
-
-            btnLocate.style.display = 'none';
-            locationTitle.textContent = '📍 已取得您的座標';
-
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${currentPosition.lat}&lon=${currentPosition.lng}&zoom=18&addressdetails=1`, {
-                headers: { 'Accept-Language': 'zh-TW,zh;q=0.9,en;q=0.8' }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    const address = data.display_name || '您的目前位置';
-                    locationTitle.textContent = `📍 您目前位於: ${address}`;
-                })
-                .catch(() => {
-                    locationTitle.textContent = '📍 已取得您的座標';
-                });
-
-            locationDesc.textContent = '已根據您的位置重新計算距離';
-            sortOptions.style.display = 'block';
-
-            const locationCard = document.querySelector('.location-card');
-            if (locationCard) locationCard.style.display = 'none';
-
-            applyFilters();
-        },
-        (error) => {
-            btnLocate.disabled = false;
-            btnLocate.innerHTML = '<i class="fa-solid fa-location-dot"></i> 重新嘗試定位';
-            locationTitle.textContent = '無法取得位置';
-        },
-        { enableHighAccuracy: true, timeout: 10000 }
-    );
 }
 
 function applyFilters(searchTerm = searchInput.value.toLowerCase().trim()) {
@@ -342,11 +174,9 @@ function applyFilters(searchTerm = searchInput.value.toLowerCase().trim()) {
         const matchSearch = item.name.toLowerCase().includes(searchTerm) ||
             item.reason.toLowerCase().includes(searchTerm) ||
             item.category.toLowerCase().includes(searchTerm);
-
         const matchCategory = currentCategory === 'all' || item.category === currentCategory;
         const matchRegion = currentRegion === 'all' || item.region === currentRegion;
         const matchType = currentType === 'all' || item.type === currentType;
-
         return matchSearch && matchCategory && matchRegion && matchType;
     });
 
@@ -355,65 +185,258 @@ function applyFilters(searchTerm = searchInput.value.toLowerCase().trim()) {
         currentData.sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity));
     }
 
-    renderList(currentData);
-    if (isMapMode) updateMapMarkers();
+    renderList(currentData, restaurantList);
+
+    if (activePage === 'page-map' && mapInstance) {
+        updateMapMarkers();
+    }
 }
 
-function handleSearch(e) {
-    applyFilters(e.target.value.toLowerCase().trim());
-}
-
-function renderList(data) {
-    restaurantList.innerHTML = '';
-    resultsCount.textContent = `(${data.length})`;
+function renderList(data, container) {
+    container.innerHTML = '';
+    resultsCount.textContent = `${data.length} 項結果`;
 
     if (data.length === 0) {
-        restaurantList.style.display = 'none';
+        container.style.display = 'none';
         noResults.style.display = 'block';
         return;
     }
 
-    restaurantList.style.display = 'grid';
+    container.style.display = 'flex';
     noResults.style.display = 'none';
 
     data.forEach(item => {
         const clone = cardTemplate.content.cloneNode(true);
-        const nameElement = clone.querySelector('.restaurant-name');
+        const card = clone.querySelector('.item-card');
+        card.setAttribute('data-type', item.type || 'food');
 
-        const typeIcon = item.type === 'food' ? '<i class="fa-solid fa-utensils"></i>' :
-            item.type === 'spot' ? '<i class="fa-solid fa-mountain-sun"></i>' :
-                '<i class="fa-solid fa-bag-shopping"></i>';
+        const typeIcon = item.type === 'food' ? '🍜' : item.type === 'spot' ? '⛩️' : '🛍️';
+        const nameEl = clone.querySelector('.restaurant-name');
+        nameEl.innerHTML = `<span class="card-type-icon">${typeIcon}</span>${item.name}<span class="card-tag">${item.region} · ${item.category}</span>`;
 
-        nameElement.innerHTML = `${typeIcon} ${item.name} <span class="card-category-tag">${item.region} · ${item.category}</span>`;
         clone.querySelector('.recommendation-reason').textContent = item.reason;
 
-        const distanceBadge = clone.querySelector('.distance-badge');
-        const mapBtn = clone.querySelector('.map-btn');
-
-        // 判斷是否需要地圖相關資訊 (經緯度)
+        const badge = clone.querySelector('.distance-badge');
         const hasCoords = item.lat && item.lng;
 
         if (item.distance !== undefined && hasCoords) {
-            distanceBadge.style.display = 'flex';
-            distanceBadge.querySelector('.distance-value').textContent =
-                item.distance > 100 ? `約 ${item.distance.toFixed(0)} km` :
+            badge.style.display = 'flex';
+            badge.querySelector('.distance-value').textContent =
+                item.distance > 100 ? `${item.distance.toFixed(0)} km` :
                     item.distance < 1 ? `${(item.distance * 1000).toFixed(0)} m` :
                         `${item.distance.toFixed(1)} km`;
-        } else {
-            distanceBadge.style.display = 'none';
         }
 
-        // 判斷是否顯示地圖連結 (有經緯度 或 有指定店點 mapsQuery)
+        const mapBtn = clone.querySelector('.map-btn');
         if (hasCoords || item.mapsQuery) {
-            const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.mapsQuery || item.name)}`;
-            mapBtn.href = mapUrl;
-            mapBtn.style.display = 'flex';
+            mapBtn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.mapsQuery || item.name)}`;
         } else {
             mapBtn.style.display = 'none';
         }
 
-        restaurantList.appendChild(clone);
+        container.appendChild(clone);
     });
+}
+
+function renderNearbyList() {
+    if (!currentPosition) return;
+
+    const allData = getAllData();
+    calculateDistances(allData);
+    const nearbyData = allData
+        .filter(item => item.distance !== undefined)
+        .sort((a, b) => a.distance - b.distance)
+        .slice(0, 20);
+
+    nearbyList.innerHTML = '';
+
+    nearbyData.forEach(item => {
+        const clone = cardTemplate.content.cloneNode(true);
+        const card = clone.querySelector('.item-card');
+        card.setAttribute('data-type', item.type || 'food');
+
+        const typeIcon = item.type === 'food' ? '🍜' : item.type === 'spot' ? '⛩️' : '🛍️';
+        const nameEl = clone.querySelector('.restaurant-name');
+        nameEl.innerHTML = `<span class="card-type-icon">${typeIcon}</span>${item.name}<span class="card-tag">${item.region} · ${item.category}</span>`;
+
+        clone.querySelector('.recommendation-reason').textContent = item.reason;
+
+        const badge = clone.querySelector('.distance-badge');
+        if (item.distance !== undefined) {
+            badge.style.display = 'flex';
+            badge.querySelector('.distance-value').textContent =
+                item.distance > 100 ? `${item.distance.toFixed(0)} km` :
+                    item.distance < 1 ? `${(item.distance * 1000).toFixed(0)} m` :
+                        `${item.distance.toFixed(1)} km`;
+        }
+
+        const mapBtn = clone.querySelector('.map-btn');
+        if (item.lat && item.lng || item.mapsQuery) {
+            mapBtn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.mapsQuery || item.name)}`;
+        } else {
+            mapBtn.style.display = 'none';
+        }
+
+        nearbyList.appendChild(clone);
+    });
+}
+
+function handleGeolocation() {
+    if (!navigator.geolocation) {
+        showToast('您的瀏覽器不支援定位功能');
+        return;
+    }
+
+    btnLocate.disabled = true;
+    btnLocate.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>定位中...</span>';
+    locationTitle.textContent = '正在取得位置...';
+
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            currentPosition = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+
+            btnLocate.classList.add('located');
+            btnLocate.innerHTML = '<i class="fa-solid fa-check"></i><span>已定位</span>';
+            btnLocate.disabled = false;
+
+            locationTitle.textContent = '📍 已取得您的位置';
+            locationDesc.textContent = '下方依距離排序顯示最近的推薦';
+            sortOptions.style.display = 'flex';
+
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${currentPosition.lat}&lon=${currentPosition.lng}&zoom=18&addressdetails=1`, {
+                headers: { 'Accept-Language': 'zh-TW,zh;q=0.9,en;q=0.8' }
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.display_name) {
+                        locationTitle.textContent = `📍 ${data.display_name}`;
+                    }
+                })
+                .catch(() => {});
+
+            applyFilters();
+            renderNearbyList();
+            showToast('定位成功！已依距離排序');
+        },
+        () => {
+            btnLocate.disabled = false;
+            btnLocate.innerHTML = '<i class="fa-solid fa-location-dot"></i><span>重新定位</span>';
+            locationTitle.textContent = '定位失敗';
+            locationDesc.textContent = '請確認已允許位置存取權限';
+            showToast('無法取得位置，請檢查權限設定');
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+    );
+}
+
+function initMap() {
+    const center = currentPosition ? [currentPosition.lat, currentPosition.lng] : [35.6812, 139.7671];
+    const zoom = currentPosition ? 13 : 6;
+
+    mapInstance = L.map('interactive-map', {
+        zoomControl: false
+    }).setView(center, zoom);
+
+    L.control.zoom({ position: 'bottomright' }).addTo(mapInstance);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CARTO',
+        maxZoom: 19
+    }).addTo(mapInstance);
+
+    markersLayer = L.layerGroup().addTo(mapInstance);
+    updateMapMarkers();
+}
+
+function updateMapMarkers() {
+    if (!mapInstance || !markersLayer) return;
+    markersLayer.clearLayers();
+
+    if (currentPosition) {
+        const userIcon = L.divIcon({
+            html: '<div style="width:14px;height:14px;background:#ff6b6b;border-radius:50%;border:3px solid white;box-shadow:0 0 10px rgba(255,107,107,0.6);"></div>',
+            iconSize: [14, 14],
+            className: ''
+        });
+        L.marker([currentPosition.lat, currentPosition.lng], { icon: userIcon, zIndexOffset: 1000 })
+            .bindPopup('<b>📍 您的位置</b>')
+            .addTo(markersLayer);
+    }
+
+    const bounds = L.latLngBounds();
+    if (currentPosition) bounds.extend([currentPosition.lat, currentPosition.lng]);
+
+    let hasItems = false;
+    currentData.forEach(item => {
+        if (!item.lat || !item.lng) return;
+        hasItems = true;
+
+        const colors = { food: '#ff6b6b', spot: '#ffd93d', shop: '#4ecdc4' };
+        const icons = { food: '🍜', spot: '⛩️', shop: '🛍️' };
+        const color = colors[item.type] || '#ff6b6b';
+
+        const icon = L.divIcon({
+            html: `<div style="width:30px;height:30px;background:${color};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px ${color}80;border:2px solid rgba(255,255,255,0.3);">${icons[item.type] || '📍'}</div>`,
+            iconSize: [30, 30],
+            className: ''
+        });
+
+        const popup = `
+            <div style="min-width:180px;">
+                <div class="popup-name">${icons[item.type] || ''} ${item.name}</div>
+                <div class="popup-tags">
+                    <span class="popup-tag">${item.region}</span>
+                    <span class="popup-tag">${item.category}</span>
+                </div>
+                <div class="popup-reason">${item.reason}</div>
+                <a class="popup-nav-btn" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.mapsQuery || item.name)}" target="_blank">
+                    <i class="fa-solid fa-diamond-turn-right"></i> 導航
+                </a>
+            </div>
+        `;
+
+        L.marker([item.lat, item.lng], { icon }).bindPopup(popup).addTo(markersLayer);
+        bounds.extend([item.lat, item.lng]);
+    });
+
+    if ((hasItems || currentPosition) && currentData.length > 0) {
+        try { mapInstance.fitBounds(bounds, { padding: [40, 40], maxZoom: 15, animate: false }); } catch (e) { /* ignore */ }
+    }
+}
+
+function handleAddItem(e) {
+    e.preventDefault();
+
+    const newItem = {
+        name: $('#new-name').value.trim(),
+        region: $('#new-region').value,
+        type: $('#new-type').value,
+        category: $('#new-category').value.trim(),
+        reason: $('#new-reason').value.trim(),
+        mapsQuery: $('#new-name').value.trim() + ' ' + $('#new-region').value
+    };
+
+    const lat = $('#new-lat').value;
+    const lng = $('#new-lng').value;
+    if (lat && lng) {
+        newItem.lat = parseFloat(lat);
+        newItem.lng = parseFloat(lng);
+    }
+
+    saveToLocalStorage(newItem);
+    applyFilters();
+    showToast('已新增推薦項目！');
+    closeModal();
+}
+
+function saveToLocalStorage(item) {
+    const saved = localStorage.getItem('tokyoFoodMapCustomData');
+    let custom = [];
+    if (saved) {
+        try { custom = JSON.parse(saved); } catch (e) { /* ignore */ }
+    }
+    custom.push(item);
+    localStorage.setItem('tokyoFoodMapCustomData', JSON.stringify(custom));
 }
 
 function calculateDistances(data) {
@@ -423,18 +446,28 @@ function calculateDistances(data) {
         if (!item.lat || !item.lng) return;
         const dLat = (item.lat - currentPosition.lat) * Math.PI / 180;
         const dLng = (item.lng - currentPosition.lng) * Math.PI / 180;
-        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        const a = Math.sin(dLat / 2) ** 2 +
             Math.cos(currentPosition.lat * Math.PI / 180) * Math.cos(item.lat * Math.PI / 180) *
-            Math.sin(dLng / 2) * Math.sin(dLng / 2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        item.distance = R * c;
+            Math.sin(dLng / 2) ** 2;
+        item.distance = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     });
 }
 
-function closeAndResetModal() {
+function closeModal() {
     addModal.style.display = 'none';
     addForm.reset();
 }
 
-document.addEventListener('DOMContentLoaded', init);
+function showToast(msg) {
+    let toast = $('.toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'toast';
+        document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2200);
+}
 
+document.addEventListener('DOMContentLoaded', init);
