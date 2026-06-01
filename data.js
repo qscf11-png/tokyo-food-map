@@ -243,7 +243,7 @@ const japanRecommendationData = [
     {
         name: "森本燒鳥 (Yakitori Morimoto)",
         reason: "澀谷區老字號燒鳥店，串燒技術精湛，是體驗當地居酒屋文化的推薦地。",
-        category: "燒肉",
+        category: "串燒",
         type: "food",
         region: "東京",
         lat: 35.6587,
@@ -513,7 +513,7 @@ const japanRecommendationData = [
     {
         name: "福みみ 串燒 (Ginza)",
         reason: "亞洲頂級串燒，氣氛熱鬧。贈送芝士餅乾超美味，下酒一流。",
-        category: "燒肉",
+        category: "串燒",
         type: "food",
         region: "東京",
         lat: 35.671936,
@@ -2413,5 +2413,76 @@ const japanRecommendationData = [
         lat: 39.5998,
         lng: 140.5615,
         mapsQuery: "そばきり 有喜屋 角館"
+    },
+    // ===== 東京串燒 (燒鳥) 擴充 =====
+    {
+        name: "鳥真 (谷中)",
+        reason: "藏身谷中的燒鳥名店，份量大又多汁，肝串與雞肉丸串是絕品。",
+        category: "串燒",
+        type: "food",
+        region: "東京",
+        lat: 35.7235,
+        lng: 139.766,
+        mapsQuery: "鳥真 谷中 焼き鳥"
+    },
+    {
+        name: "炭火焼 ささのや (鶯谷)",
+        reason: "鶯谷站旁平價炭火燒鳥，一串約 70 円、自助取用，銅板價超划算。",
+        category: "串燒",
+        type: "food",
+        region: "東京",
+        lat: 35.7205,
+        lng: 139.7782,
+        mapsQuery: "炭火焼やきとり ささのや 鶯谷"
+    },
+    {
+        name: "鳥貴族 日暮里店",
+        reason: "日暮里站旁平價串燒連鎖，均一價、品項多，住附近的宵夜首選。",
+        category: "串燒",
+        type: "food",
+        region: "東京",
+        lat: 35.728,
+        lng: 139.7712,
+        mapsQuery: "鳥貴族 日暮里店"
+    },
+    {
+        name: "Bird Land (銀座)",
+        reason: "日本第一家米其林星級燒鳥，奧久慈軍雞炭烤一絕，需預約。",
+        category: "串燒",
+        type: "food",
+        region: "東京",
+        lat: 35.67271,
+        lng: 139.76391,
+        mapsQuery: "バードランド 銀座"
+    },
+    {
+        name: "焼鳥 鳥よし (銀座店)",
+        reason: "紀州備長炭烤伊達雞，講究到連鹽的用量，東京燒鳥名店。",
+        category: "串燒",
+        type: "food",
+        region: "東京",
+        lat: 35.6705,
+        lng: 139.7662,
+        mapsQuery: "焼鳥 鳥よし 銀座店"
+    },
+    {
+        name: "焼鳥 今井 (外苑前)",
+        reason: "外苑前米其林必比登燒鳥，串串講究、CP 值高。",
+        category: "串燒",
+        type: "food",
+        region: "東京",
+        lat: 35.67,
+        lng: 139.718,
+        mapsQuery: "焼鳥 今井 外苑前"
+    },
+    {
+        name: "焼鳥 阿部 (目黑)",
+        reason: "目黑米其林必比登燒鳥名店，職人炭烤工夫了得。",
+        category: "串燒",
+        type: "food",
+        region: "東京",
+        lat: 35.6335,
+        lng: 139.715,
+        mapsQuery: "焼鳥 阿部 目黒"
     }
 ];
