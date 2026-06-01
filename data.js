@@ -2302,5 +2302,116 @@ const japanRecommendationData = [
         type: "food",
         region: "京都",
         mapsQuery: "月下美人 みたらし団子 京都"
+    },
+    // ===== 青森海鮮 + 蕎麥麵 擴充 =====
+    {
+        name: "大間鮪魚 (大間崎)",
+        reason: "本州最北端大間崎，現撈黑鮪魚號稱『黑鑽石』，海鮮丼鮪魚肥美無比。",
+        category: "海鮮",
+        type: "food",
+        region: "青森",
+        lat: 41.5278,
+        lng: 140.9103,
+        mapsQuery: "大間崎 大間まぐろ 食堂"
+    },
+    {
+        name: "みなと食堂 (八戶)",
+        reason: "八戶陸奧湊名店，招牌比目魚漬け丼三吃，清晨就能吃到。",
+        category: "海鮮丼",
+        type: "food",
+        region: "青森",
+        lat: 40.52395,
+        lng: 141.52892,
+        mapsQuery: "みなと食堂 八戸 陸奥湊"
+    },
+    {
+        name: "もりや商店 (浅虫溫泉)",
+        reason: "浅虫溫泉排隊名店，陸奧灣帆立貝定食鮮甜肥美。",
+        category: "海鮮",
+        type: "food",
+        region: "青森",
+        lat: 40.90144,
+        lng: 140.85661,
+        mapsQuery: "もりや商店 浅虫温泉"
+    },
+    {
+        name: "食事処 おさない",
+        reason: "青森駅旁老牌食堂，名物帆立貝燒味噌與新鮮海鮮丼。",
+        category: "海鮮",
+        type: "food",
+        region: "青森",
+        lat: 40.8256,
+        lng: 140.7356,
+        mapsQuery: "おさない 青森駅前"
+    },
+    {
+        name: "神田 藪そば",
+        reason: "百年江戶蕎麥御三家『藪』，清雅高湯沾汁配細蕎麥麵。",
+        category: "蕎麥麵",
+        type: "food",
+        region: "東京",
+        lat: 35.696,
+        lng: 139.7693,
+        mapsQuery: "神田藪そば 淡路町"
+    },
+    {
+        name: "並木藪蕎麦",
+        reason: "淺草雷門旁百年藪流蕎麥，濃郁沾汁是在地人心頭好。",
+        category: "蕎麥麵",
+        type: "food",
+        region: "東京",
+        lat: 35.7095,
+        lng: 139.7957,
+        mapsQuery: "並木藪蕎麦 浅草"
+    },
+    {
+        name: "神田まつや",
+        reason: "創業 1884 年江戶蕎麥名店，職人每日現打二八蕎麥麵。",
+        category: "蕎麥麵",
+        type: "food",
+        region: "東京",
+        lat: 35.69612,
+        lng: 139.76878,
+        mapsQuery: "神田まつや"
+    },
+    {
+        name: "室町砂場",
+        reason: "『天もり・天ざる』發源的砂場流派江戶蕎麥老舖。",
+        category: "蕎麥麵",
+        type: "food",
+        region: "東京",
+        lat: 35.6894,
+        lng: 139.77179,
+        mapsQuery: "室町砂場 日本橋"
+    },
+    {
+        name: "更科堀井",
+        reason: "更科流派老舖，雪白『御前そば』口感細緻高雅。",
+        category: "蕎麥麵",
+        type: "food",
+        region: "東京",
+        lat: 35.65849,
+        lng: 139.73679,
+        mapsQuery: "更科堀井 麻布十番"
+    },
+    {
+        name: "本家尾張屋 本店",
+        reason: "創業 1465 年京都蕎麥老舖，多層『寶來そば』必試。",
+        category: "蕎麥麵",
+        type: "food",
+        region: "京都",
+        lat: 35.0127,
+        lng: 135.7616,
+        mapsQuery: "本家尾張屋 本店 京都"
+    },
+    {
+        name: "そばきり 有喜屋 (角館)",
+        reason: "角館手打蕎麥名店，蕎麥配比內地雞親子丼的鄉土組合。",
+        category: "蕎麥麵",
+        type: "food",
+        region: "秋田",
+        lat: 39.5998,
+        lng: 140.5615,
+        mapsQuery: "そばきり 有喜屋 角館"
     }
 ];
