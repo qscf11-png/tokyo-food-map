@@ -1831,5 +1831,56 @@ const japanRecommendationData = [
         type: "shop",
         region: "青森",
         mapsQuery: "青森 ホタテ 干し 帆立"
+    },
+    // ===== 台場 (Odaiba) 購物 / 景點 =====
+    {
+        name: "DiverCity Tokyo Plaza",
+        reason: "台場地標商場，集結 Uniqlo、GU、ABC-Mart 與鋼彈基地，2 樓美食廣場好逛。",
+        category: "購物中心",
+        type: "shop",
+        region: "東京",
+        lat: 35.6254,
+        lng: 139.7755,
+        mapsQuery: "ダイバーシティ東京プラザ お台場"
+    },
+    {
+        name: "AQUA CiTY 台場",
+        reason: "可眺望彩虹大橋與自由女神，有 Disney Store、Air BicCamera 與東京拉麵國技館。",
+        category: "購物中心",
+        type: "shop",
+        region: "東京",
+        lat: 35.62781,
+        lng: 139.773,
+        mapsQuery: "アクアシティお台場"
+    },
+    {
+        name: "DECKS 台場一丁目商店街",
+        reason: "昭和復古商店街，便宜零食、雜貨與扭蛋，小額伴手禮首選。",
+        category: "購物中心",
+        type: "shop",
+        region: "東京",
+        lat: 35.6291,
+        lng: 139.7745,
+        mapsQuery: "デックス東京ビーチ 台場一丁目商店街"
+    },
+    {
+        name: "お台場章魚燒博物館",
+        reason: "集結大阪名店的章魚燒主題館（DECKS 內），一次吃遍多家口味。",
+        category: "章魚燒",
+        type: "food",
+        region: "東京",
+        lat: 35.6293,
+        lng: 139.7746,
+        mapsQuery: "お台場たこ焼きミュージアム デックス東京ビーチ"
+    },
+    {
+        name: "台場海濱公園 (自由女神像)",
+        reason: "免費眺望彩虹大橋、自由女神與東京灣夜景的人氣海濱公園。",
+        category: "公園",
+        type: "spot",
+        region: "東京",
+        lat: 35.6308,
+        lng: 139.7737,
+        mapsQuery: "お台場海浜公園 自由の女神像"
     }
 ];
