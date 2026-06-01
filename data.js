@@ -1882,5 +1882,146 @@ const japanRecommendationData = [
         lat: 35.6308,
         lng: 139.7737,
         mapsQuery: "お台場海浜公園 自由の女神像"
+    },
+    // ===== 八戶 (青森) / 角館 (秋田) 擴充 =====
+    {
+        name: "八食中心 (八食センター)",
+        reason: "青森最大海鮮市場，60+ 店家，現買海鮮可在『七厘村』自助炭烤現吃。",
+        category: "市場",
+        type: "spot",
+        region: "青森",
+        lat: 40.5264,
+        lng: 141.45349,
+        mapsQuery: "八食センター 八戸"
+    },
+    {
+        name: "館鼻岸壁朝市",
+        reason: "日本最大級週日早市，300+ 攤位海鮮、小吃、古物，清晨限定超熱鬧。",
+        category: "市場",
+        type: "spot",
+        region: "青森",
+        lat: 40.5296,
+        lng: 141.5347,
+        mapsQuery: "館鼻岸壁朝市 八戸"
+    },
+    {
+        name: "みろく横丁 (屋台村)",
+        reason: "八戶屋台村，昭和風小店林立，適合一家家吃喝感受在地夜生活。",
+        category: "居酒屋",
+        type: "food",
+        region: "青森",
+        lat: 40.50942,
+        lng: 141.49064,
+        mapsQuery: "みろく横丁 八戸"
+    },
+    {
+        name: "種差海岸",
+        reason: "天然草坪一路鋪到海邊的療癒海岸線，適合散步野餐。",
+        category: "自然景觀",
+        type: "spot",
+        region: "青森",
+        lat: 40.5273,
+        lng: 141.5662,
+        mapsQuery: "種差海岸 八戸"
+    },
+    {
+        name: "味のめん匠 (煮干拉麵)",
+        reason: "みろく横丁人氣煮干拉麵，小魚乾湯頭清爽濃郁。",
+        category: "拉麵",
+        type: "food",
+        region: "青森",
+        lat: 40.50901,
+        lng: 141.49122,
+        mapsQuery: "味のめん匠 みろく横丁 八戸"
+    },
+    {
+        name: "八戶煎餅湯 (せんべい汁)",
+        reason: "南部鄉土料理，南部煎餅煮進醬油雞湯，吸湯後 QQ 有嚼勁。",
+        category: "鄉土料理",
+        type: "food",
+        region: "青森",
+        mapsQuery: "八戸 せんべい汁"
+    },
+    {
+        name: "南部煎餅",
+        reason: "八戶名產烤煎餅，原味或夾餡都涮嘴，經典伴手禮。",
+        category: "伴手禮",
+        type: "shop",
+        region: "青森",
+        mapsQuery: "南部せんべい 八戸"
+    },
+    {
+        name: "角館 武家屋敷通",
+        reason: "保存完整的江戶武家宅邸街道，黑板塀與枝垂櫻宛如時代劇場景。",
+        category: "老街",
+        type: "spot",
+        region: "秋田",
+        lat: 39.6015,
+        lng: 140.561,
+        mapsQuery: "角館 武家屋敷通"
+    },
+    {
+        name: "檜木内川堤 櫻並木",
+        reason: "約 2km 染井吉野櫻花隧道，東北三大賞櫻名所、國家名勝。",
+        category: "自然景觀",
+        type: "spot",
+        region: "秋田",
+        lat: 39.6042,
+        lng: 140.5557,
+        mapsQuery: "檜木内川堤 桜並木 角館"
+    },
+    {
+        name: "お食事処 桜の里 (櫻之里)",
+        reason: "角館人氣名店，比內地雞親子丼與稻庭烏龍麵一次滿足。",
+        category: "親子丼",
+        type: "food",
+        region: "秋田",
+        lat: 39.6006,
+        lng: 140.5614,
+        mapsQuery: "お食事処 桜の里 角館"
+    },
+    {
+        name: "食事処 ふきや",
+        reason: "可吃到佐藤養助正宗稻庭烏龍麵，滑順細麵是日本三大烏龍麵之一。",
+        category: "烏龍麵",
+        type: "food",
+        region: "秋田",
+        mapsQuery: "食事処 ふきや 角館"
+    },
+    {
+        name: "月のしずく (烤米棒鍋)",
+        reason: "旬菜料理名店，秋田烤米棒鍋(きりたんぽ)暖心必嘗。",
+        category: "鄉土料理",
+        type: "food",
+        region: "秋田",
+        mapsQuery: "月のしずく 角館"
+    },
+    {
+        name: "あきたプリン亭",
+        reason: "秋田布丁專賣，濃郁滑嫩，逛武家屋敷的甜點補給站。",
+        category: "甜點",
+        type: "food",
+        region: "秋田",
+        lat: 39.6009,
+        lng: 140.5613,
+        mapsQuery: "あきたプリン亭 角館"
+    },
+    {
+        name: "樺細工 (櫻皮工藝)",
+        reason: "角館傳統工藝，櫻樹皮製茶筒與飾品，質感溫潤獨特（樺細工傳承館可參觀）。",
+        category: "工藝品",
+        type: "shop",
+        region: "秋田",
+        lat: 39.59953,
+        lng: 140.56116,
+        mapsQuery: "角館 樺細工伝承館"
+    },
+    {
+        name: "安藤釀造 本店",
+        reason: "百年釀造老舖，味噌、醬油與醃漬物，磚造建築也好拍。",
+        category: "伴手禮",
+        type: "shop",
+        region: "秋田",
+        mapsQuery: "安藤醸造 本店 角館"
     }
 ];
