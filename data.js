@@ -2023,5 +2023,284 @@ const japanRecommendationData = [
         type: "shop",
         region: "秋田",
         mapsQuery: "安藤醸造 本店 角館"
+    },
+    // ===== 大阪/京都 觀光地圖擴充 (姪子行程) =====
+    {
+        name: "心齋橋筋商店街",
+        reason: "大阪最熱鬧的有頂商店街，藥妝、服飾、美食一條龍逛到飽。",
+        category: "購物中心",
+        type: "shop",
+        region: "大阪",
+        lat: 34.67335,
+        lng: 135.50137,
+        mapsQuery: "心斎橋筋商店街"
+    },
+    {
+        name: "心齋橋 PARCO",
+        reason: "心齋橋潮流百貨，集結動漫、扭蛋、潮牌與美食樓層。",
+        category: "購物中心",
+        type: "shop",
+        region: "大阪",
+        lat: 34.67387,
+        lng: 135.50097,
+        mapsQuery: "心斎橋PARCO"
+    },
+    {
+        name: "寶可夢中心大阪 DX",
+        reason: "大丸心齋橋 13F，全西日本最大寶可夢中心，皮卡丘迷必朝聖。",
+        category: "玩具",
+        type: "shop",
+        region: "大阪",
+        lat: 34.672,
+        lng: 135.5006,
+        mapsQuery: "ポケモンセンターオーサカDX 大丸心斎橋"
+    },
+    {
+        name: "道頓堀 (固力果跑跑人)",
+        reason: "大阪地標！固力果看板、運河與滿街美食，必拍打卡。",
+        category: "老街",
+        type: "spot",
+        region: "大阪",
+        lat: 34.66903,
+        lng: 135.50157,
+        mapsQuery: "道頓堀 グリコサイン"
+    },
+    {
+        name: "道頓堀黑船 (鰻魚飯)",
+        reason: "東心齋橋鰻魚飯名店，Google 近滿分，只賣中午幾小時、建議預約。",
+        category: "鰻魚",
+        type: "food",
+        region: "大阪",
+        lat: 34.6724,
+        lng: 135.5014,
+        mapsQuery: "道頓堀黒船 東心斎橋"
+    },
+    {
+        name: "難波八阪神社",
+        reason: "巨大獅子頭舞台超震撼，祈求勝運與生意興隆的人氣神社。",
+        category: "神社寺院",
+        type: "spot",
+        region: "大阪",
+        lat: 34.66148,
+        lng: 135.49673,
+        mapsQuery: "難波八阪神社"
+    },
+    {
+        name: "新世界串カツ いっとく 総本店",
+        reason: "新世界人氣串炸，種類多、氣氛熱鬧（記得醬汁不能沾兩次）。",
+        category: "串炸",
+        type: "food",
+        region: "大阪",
+        lat: 34.6527,
+        lng: 135.5058,
+        mapsQuery: "新世界 串カツ いっとく 総本店"
+    },
+    {
+        name: "通天閣",
+        reason: "新世界地標展望塔，可俯瞰大阪、摸幸運神 Billiken 腳底。",
+        category: "展望台",
+        type: "spot",
+        region: "大阪",
+        lat: 34.65254,
+        lng: 135.50631,
+        mapsQuery: "通天閣"
+    },
+    {
+        name: "一蘭拉麵 道頓堀店",
+        reason: "知名豚骨拉麵，獨立座位、可自選濃度，道頓堀也有店。",
+        category: "拉麵",
+        type: "food",
+        region: "大阪",
+        lat: 34.66845,
+        lng: 135.50321,
+        mapsQuery: "一蘭 道頓堀店"
+    },
+    {
+        name: "海遊館",
+        reason: "世界級大型水族館，巨大鯨鯊優游的太平洋大水槽必看，親子最愛。",
+        category: "水族館",
+        type: "spot",
+        region: "大阪",
+        lat: 34.65455,
+        lng: 135.42892,
+        mapsQuery: "海遊館 大阪港"
+    },
+    {
+        name: "味乃家 大阪燒",
+        reason: "難波 60 年米其林推薦大阪燒，綜合燒料多味濃，必吃名店。",
+        category: "大阪燒",
+        type: "food",
+        region: "大阪",
+        lat: 34.6646,
+        lng: 135.5016,
+        mapsQuery: "味乃家 難波本店"
+    },
+    {
+        name: "KITTE 大阪",
+        reason: "JR 大阪站新商場，集結全國名店與大阪在地美食、伴手禮。",
+        category: "購物中心",
+        type: "shop",
+        region: "大阪",
+        lat: 34.70062,
+        lng: 135.494,
+        mapsQuery: "KITTE大阪 JR大阪駅"
+    },
+    {
+        name: "大阪城",
+        reason: "大阪象徵地標，金碧天守閣與護城河，春櫻秋楓皆美。",
+        category: "城跡",
+        type: "spot",
+        region: "大阪",
+        lat: 34.68737,
+        lng: 135.52586,
+        mapsQuery: "大阪城 天守閣"
+    },
+    {
+        name: "黑門市場",
+        reason: "大阪的廚房，現烤海鮮、和牛串、河豚與水果一路吃過去。",
+        category: "市場",
+        type: "spot",
+        region: "大阪",
+        lat: 34.66371,
+        lng: 135.50693,
+        mapsQuery: "黒門市場"
+    },
+    {
+        name: "Joshin Super Kids Land 日本橋本店",
+        reason: "日本橋電電城大型玩具模型店，鋼普拉、鐵道模型、扭蛋齊全。",
+        category: "玩具",
+        type: "shop",
+        region: "大阪",
+        lat: 34.65929,
+        lng: 135.50561,
+        mapsQuery: "ジョーシン スーパーキッズランド本店 日本橋"
+    },
+    {
+        name: "Taito Station 日本橋",
+        reason: "日本橋大型電玩遊樂場，夾娃娃、街機、扭蛋一次玩個夠。",
+        category: "遊樂場",
+        type: "spot",
+        region: "大阪",
+        lat: 34.66035,
+        lng: 135.50614,
+        mapsQuery: "タイトーステーション 日本橋"
+    },
+    {
+        name: "箕面大瀧 (箕面瀑布)",
+        reason: "大阪近郊賞楓秘境，沿溪步道走到 33m 大瀑布，順吃炸楓葉。",
+        category: "自然景觀",
+        type: "spot",
+        region: "大阪",
+        lat: 34.85389,
+        lng: 135.47197,
+        mapsQuery: "箕面大滝"
+    },
+    {
+        name: "勝尾寺",
+        reason: "箕面『勝運』達摩寺，滿山紅色不倒翁超好拍，祈求心想事成。",
+        category: "神社寺院",
+        type: "spot",
+        region: "大阪",
+        lat: 34.86562,
+        lng: 135.49226,
+        mapsQuery: "勝尾寺 箕面"
+    },
+    {
+        name: "大鳥大社",
+        reason: "和泉國一之宮（堺市），千年古社，求勝運與開運的能量景點。",
+        category: "神社寺院",
+        type: "spot",
+        region: "大阪",
+        lat: 34.53628,
+        lng: 135.46048,
+        mapsQuery: "大鳥大社 堺"
+    },
+    {
+        name: "綱敷天神社 (網敷天滿宮)",
+        reason: "梅田鬧區中的天神社，祭祀學問之神菅原道真，求學業順利。",
+        category: "神社寺院",
+        type: "spot",
+        region: "大阪",
+        lat: 34.7036,
+        lng: 135.5024,
+        mapsQuery: "綱敷天神社 御本社 大阪"
+    },
+    {
+        name: "Henry's Pizza (谷町四丁目)",
+        reason: "潮流藝術家 VERDY 開的紐約風披薩，明星愛店，餅皮香氣十足（位於大阪谷町，非京都）。",
+        category: "洋食",
+        type: "food",
+        region: "大阪",
+        lat: 34.6817,
+        lng: 135.5147,
+        mapsQuery: "Henry's Pizza 谷町四丁目 大阪"
+    },
+    {
+        name: "千代松 かつ丼",
+        reason: "地圖標記的炸豬排丼店（尚未查得確切座標，導航以店名搜尋）。",
+        category: "炸豬排/牛排",
+        type: "food",
+        region: "大阪",
+        mapsQuery: "千代松 かつ丼 大阪 道頓堀"
+    },
+    {
+        name: "麵太郎拉麵",
+        reason: "地圖標記的拉麵店（尚未查得確切座標，導航以店名搜尋）。",
+        category: "拉麵",
+        type: "food",
+        region: "大阪",
+        mapsQuery: "麺太郎 ラーメン 大阪"
+    },
+    {
+        name: "蔥蔥章魚燒",
+        reason: "道頓堀運河旁的章魚燒攤（尚未查得確切座標，導航以店名搜尋）。",
+        category: "章魚燒",
+        type: "food",
+        region: "大阪",
+        mapsQuery: "ねぎ たこ焼き 道頓堀"
+    },
+    {
+        name: "丸 はるみ 哈密瓜霜淇淋",
+        reason: "新世界附近的哈密瓜霜淇淋（尚未查得確切座標，導航以店名搜尋）。",
+        category: "甜點",
+        type: "food",
+        region: "大阪",
+        mapsQuery: "はるみ メロンソフトクリーム 新世界"
+    },
+    {
+        name: "Liberty Walk Osaka",
+        reason: "改裝車品牌 Liberty Walk 的大阪據點，車迷打卡點（座標請再確認）。",
+        category: "汽車",
+        type: "shop",
+        region: "大阪",
+        mapsQuery: "Liberty Walk Osaka"
+    },
+    {
+        name: "金閣寺 (鹿苑寺)",
+        reason: "京都必訪世界遺產，金箔閣樓倒映鏡湖池，金光燦爛。",
+        category: "神社寺院",
+        type: "spot",
+        region: "京都",
+        lat: 35.03953,
+        lng: 135.72954,
+        mapsQuery: "金閣寺"
+    },
+    {
+        name: "伏見稻荷大社",
+        reason: "千本鳥居一路綿延上山，朱紅隧道是京都最具代表性的絕景。",
+        category: "神社寺院",
+        type: "spot",
+        region: "京都",
+        lat: 34.96752,
+        lng: 135.77971,
+        mapsQuery: "伏見稲荷大社"
+    },
+    {
+        name: "月下美人 醬油團子",
+        reason: "地圖標記的醬油團子（尚未查得確切座標，導航以店名搜尋）。",
+        category: "和菓子",
+        type: "food",
+        region: "京都",
+        mapsQuery: "月下美人 みたらし団子 京都"
     }
 ];
