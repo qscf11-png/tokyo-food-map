@@ -2484,5 +2484,13 @@ const japanRecommendationData = [
         lat: 35.6335,
         lng: 139.715,
         mapsQuery: "焼鳥 阿部 目黒"
+    },
+    {
+        name: "methoc ピールケアセラムVC",
+        reason: "日本社群鬼爆紅的男性保養美容液，三重去角質成分 20%＋3 種維他命C誘導體，改善毛孔粗糙與暗沉。官網／Amazon／樂天通販有售 (30mL／¥2,480)。",
+        category: "美妝",
+        type: "shop",
+        region: "全日本",
+        mapsQuery: "methoc ピールケアセラムVC"
     }
 ];
