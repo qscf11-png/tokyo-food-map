@@ -2492,5 +2492,13 @@ const japanRecommendationData = [
         type: "shop",
         region: "全日本",
         mapsQuery: "methoc ピールケアセラムVC"
+    },
+    {
+        name: "3COINS (スリーコインズ)",
+        reason: "日本人氣 300 圓生活雜貨連鎖，必買旅行壓縮袋、磁吸手機架、迷你底片相機、微波爐調理盒、超輕量吹風機與防災小物，便宜又實用。全國皆有分店。",
+        category: "生活雜貨",
+        type: "shop",
+        region: "全日本",
+        mapsQuery: "3COINS"
     }
 ];
